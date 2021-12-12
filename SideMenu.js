@@ -5,48 +5,10 @@ const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
 
 
 
-const style = StyleSheet.create({
-  container: {
-    backgroundColor: white,
-    height: '100vh',
-  },  
-  options: {
-      borderColor: black,
-      borderRightWidth: 4,
 
-      backgroundColor: darkgray,
-
-      width: '20%',
-      height: '10vh'
-  },
-  buttonContainer: {
-    width: '100%',
-    maxHeight: 30,
-    overflow: 'hidden',
-
-    display: 'flex',
-    flexDirection: 'row',
-
-    borderColor: black,
-    borderBottomWidth: 2,
-    backgroundColor: gray,
-  },
-  buttonText: {
-    color: blue,
-    padding: 4,
-    paddingLeft: 8,
-    maxHeight: 30,
-  },
-  begin: {
-    width: '2.5%',
-    height: '100%',
-    backgroundColor: blue
-  },
-  
-});
 
 function Icon({ setOpen, unit }) {
-  const iconStyle = StyleSheet.create({
+  const style = StyleSheet.create({
     SideMenuIconCenter: {
       position: 'absolute',
       backgroundColor: darkgray,
@@ -64,10 +26,10 @@ function Icon({ setOpen, unit }) {
     SideMenuIconLeftCover: {
       position: 'absolute',
       left: unit,
-      backgroundColor: black,
+      backgroundColor: blue,
       width: unit,
       height: unit / 2,
-      borderTopLeftRadius: '100%'
+      borderTopLeftRadius: '100%',
     },
     SideMenuIconDown: {
       position: 'absolute',
@@ -75,14 +37,16 @@ function Icon({ setOpen, unit }) {
       backgroundColor: darkgray,
       width: unit / 2,
       height: unit,
+      borderBottomRightRadius: '100%',
     },
     SideMenuIconDownCover: {
       position: 'absolute',
       top: unit,
-      backgroundColor: black,
+      backgroundColor: blue,
       width: unit / 2,
       height: unit,
       borderTopLeftRadius: '100%',
+      borderBottomRightRadius: '90%',
     },
     image: {
       position: 'absolute',
@@ -95,32 +59,117 @@ function Icon({ setOpen, unit }) {
   })
   return (
   <>
-    <Pressable onPress={() => setOpen(true)} style={iconStyle.SideMenuIconCenter}>
-      <Image style={iconStyle.image} source={require('F:\\ALEX\\VSC\\Music Player\\MusicPlayerMobile\\music logo.jpg')}/>
-      <View style={iconStyle.SideMenuIconDown}></View>
-      <View style={iconStyle.SideMenuIconLeft}></View>
+    <Pressable onPress={() => setOpen(true)} style={style.SideMenuIconCenter}>
+      <Image style={style.image} source={require('F:\\ALEX\\VSC\\Music Player\\MusicPlayerMobile\\music logo.jpg')}/>
+      <View style={style.SideMenuIconDown}></View>
+      <View style={style.SideMenuIconLeft}></View>
     </Pressable>
-      <View style={iconStyle.SideMenuIconDownCover}></View>
-      <View style={iconStyle.SideMenuIconLeftCover}></View>
+      <View style={style.SideMenuIconDownCover}></View>
+      <View style={style.SideMenuIconLeftCover}></View>
   </>
   );// outside so that it doesn't activate the touch
 }
 
+function SideBar({ setOpen, setCurrentPage, unit }) {
+  unit = unit / 2;
+  const style = StyleSheet.create({
+    container: {
+      backgroundColor: gray,
+    },  
+    options: {
+      borderColor: black,
+      borderRightWidth: 4,
 
-function OptionsText({children, onPress, setOpen}) {
-    function press() {
-      setOpen(false);
-      onPress();
-    } 
-    return (
-        <Pressable onPress={press} style={style.buttonContainer}>
-          <View style={style.begin}/>
-          <Text style={style.buttonText}>
-            {children}
-          </Text>
-        </Pressable>
-    )
+      backgroundColor: darkgray,
+
+      width: '20%',
+      height: '10vh'
+    },
+    buttonContainer: {
+      width: '100%',
+      maxHeight: 30,
+      overflow: 'hidden',
+  
+      display: 'flex',
+      flexDirection: 'row',
+  
+      borderColor: black,
+      borderBottomWidth: 2,
+      backgroundColor: gray,
+    },
+    buttonText: {
+      color: blue,
+      padding: 4,
+      paddingLeft: 8,
+      maxHeight: 30,
+    },
+    begin: {
+      width: '2.5%',
+      height: '100%',
+      backgroundColor: blue
+    },
+    curve: {
+      display: 'flex',
+      width: '100%',
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+      backgroundColor: blue,
+    },
+
+    CurveLeft: {
+      height: 2 * unit,
+      width:'50%',
+      backgroundColor: darkgray,
+    },
+    CurveLeftCover: {
+      height: unit,
+      width: '50%',
+      marginTop: - unit,
+      backgroundColor: blue,
+      borderTopLeftRadius: '100%',
+    },
+    CurveRight: {
+      height: unit,
+      width: '50%',
+      backgroundColor: darkgray,
+      borderBottomRightRadius: '100%'
+    },
+    CurveRightCover: {
+      height: unit,
+      width: '50%',
+      zIndex: 20,
+      backgroundColor: blue,
+      borderBottomRightRadius: '100%'
+    },
+  });
+  function OptionsText({children, route}) {
+      return (
+          <Pressable onPress={() => {setOpen(false);setCurrentPage(route);}} style={style.buttonContainer}>
+            <View style={style.begin}/>
+            <Text style={style.buttonText}>
+              {children}
+            </Text>
+          </Pressable>
+      )
+  }
+
+
+  return (
+    <View style={style.container}>
+        <OptionsText route={'Home'}>Home</OptionsText>
+        <OptionsText route={'Playlists'}>Playlists</OptionsText>
+        <OptionsText route={'Artists'}>Artists</OptionsText>
+        <OptionsText route={'Download'}>Add song</OptionsText>
+        <OptionsText route={'Settings'}>Settings</OptionsText>
+        <View style={style.curve}>
+          <View style={style.CurveLeft}/>
+          <View style={style.CurveRight}/>
+          <View style={style.CurveLeftCover}/>
+        </View>
+    </View>
+  )
 }
+
 
 
 
@@ -137,16 +186,16 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
         duration: 1000,
         useNativeDriver: false
       }
-    ).start(() =>
-      Animated.timing(
-        optionsAnim,
-        {
-         toValue: 2 * unit,
-          duration: 500,
-          useNativeDriver: false
-        }
-      ).start()
-    );    
+    ).start();    
+    Animated.timing(
+      optionsAnim,
+      {
+        toValue: 2 * unit,
+        delay: 500,
+        duration: 800,
+        useNativeDriver: false
+      }
+    ).start();
   } else if (open === false) {
     iconAnim = new Animated.Value(-2 * unit);
     optionsAnim = new Animated.Value(2 * unit);
@@ -157,30 +206,23 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
         duration: 500,
         useNativeDriver: false
       }
-    ).start(() =>
-      Animated.timing(
-        iconAnim,
-        {
-          toValue: 0,
-          duration: 1000,
-          useNativeDriver: false
-        }
-      ).start()
-    );
+    ).start();
+    Animated.timing(
+      iconAnim,
+      {
+        toValue: 0,
+        // delay: 800,
+        duration: 1000,
+        useNativeDriver: false
+      }
+    ).start()
   } else {
     iconAnim = 0;
     optionsAnim = 0;
   }
   return (<>
     <Animated.View style={{width: optionsAnim}}>
-      <View style={style.container}>
-        <OptionsText setOpen={setOpen} onPress={() => setCurrentPage('Home')}>Home</OptionsText>
-        <OptionsText setOpen={setOpen} onPress={() => setCurrentPage('Playlists')}>Playlists</OptionsText>
-        <OptionsText setOpen={setOpen} onPress={() => setCurrentPage('Artists')}>Artists</OptionsText>
-        <OptionsText setOpen={setOpen} onPress={() => setCurrentPage('Download')}>Add song</OptionsText>
-        <OptionsText setOpen={setOpen} onPress={() => setCurrentPage('Settings')}>Settings</OptionsText>
-      </View>
-      <Curve></Curve>
+      <SideBar unit={unit} setOpen={setOpen} setCurrentPage={setCurrentPage}/>
     </Animated.View>
     <Animated.View style={{top: iconAnim, left: iconAnim}}>
       <Icon unit={unit} setOpen={setOpen}/>

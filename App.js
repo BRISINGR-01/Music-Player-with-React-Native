@@ -10,7 +10,7 @@ const { black, blue } = SharedUtilities.style;
 
 
 export default function App() {
-  const [open, setOpen] = useState(2);// to show it hasn't been opened yet
+  const [open, setOpen] = useState(true);// to show it hasn't been opened yet
   const [currentPage, setCurrentPage] = useState('Home');// to show it hasn't been opened yet
 
   const [windowW, setW] = useState(Dimensions.get('window').width);
