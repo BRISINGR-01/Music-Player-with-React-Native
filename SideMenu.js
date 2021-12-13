@@ -183,7 +183,7 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
       iconAnim,
       {
         toValue: - 2 * unit,
-        duration: 1000,
+        duration: 500,
         useNativeDriver: false
       }
     ).start();    
@@ -191,8 +191,8 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
       optionsAnim,
       {
         toValue: 2 * unit,
-        delay: 500,
-        duration: 800,
+        delay: 250,
+        duration: 400,
         useNativeDriver: false
       }
     ).start();
@@ -203,7 +203,7 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
       optionsAnim,
       {
         toValue: 0,
-        duration: 500,
+        duration: 250,
         useNativeDriver: false
       }
     ).start();
@@ -211,8 +211,8 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
       iconAnim,
       {
         toValue: 0,
-        // delay: 800,
-        duration: 1000,
+        delay: 100,
+        duration: 500,
         useNativeDriver: false
       }
     ).start()
