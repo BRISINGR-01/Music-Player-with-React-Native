@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Image, StyleSheet, Animated, Pressable, Dimensions } from 'react-native'
-import SharedUtilities from "./SharedUtilities";
+import SharedUtilities from "../SharedUtilities";
 const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
 
 
@@ -60,7 +60,7 @@ function Icon({ setOpen, unit }) {
   return (
   <>
     <Pressable onPress={() => setOpen(true)} style={style.SideMenuIconCenter}>
-      <Image style={style.image} source={require('F:\\ALEX\\VSC\\Music Player\\MusicPlayerMobile\\music logo.jpg')}/>
+      <Image style={style.image} source={require('../assets/music logo.jpg')}/>
       <View style={style.SideMenuIconDown}></View>
       <View style={style.SideMenuIconLeft}></View>
     </Pressable>

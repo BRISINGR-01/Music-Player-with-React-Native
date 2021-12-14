@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Dimensions, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
-import routes from './routes/index.js';
-import SideMenu from './SideMenu.js';
+import routes from './routes/main body/index.js';
+import SideMenu from './routes/SideMenu.js';
 import SharedUtilities from './SharedUtilities.js';
 const { black, blue } = SharedUtilities.style;
 
@@ -10,7 +10,7 @@ const { black, blue } = SharedUtilities.style;
 
 
 export default function App() {
-  const [open, setOpen] = useState(true);// to show it hasn't been opened yet
+  const [open, setOpen] = useState(2);// to show it hasn't been opened yet
   const [currentPage, setCurrentPage] = useState('Home');// to show it hasn't been opened yet
 
   const [windowW, setW] = useState(Dimensions.get('window').width);
