@@ -1,6 +1,7 @@
 node_modules/
-client/.expo/
-client/dist/
+.expo/
+dist/
+music/
 npm-debug.*
 *.jks
 *.p8

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Dimensions, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
-import routes from './routes/main body/index.js';
-import SideMenu from './routes/SideMenu.js';
-import SharedUtilities from './SharedUtilities.js';
+import routes from './client/routes/main body/index.js';
+import SideMenu from './client/routes/SideMenu.js';
+import SharedUtilities from './client/SharedUtilities.js';
 const { black, blue } = SharedUtilities.style;
 
 
