@@ -2,28 +2,19 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
 import SharedUtilities from '../../SharedUtilities';
 const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
-import ytdl from 'ytdl-core';
-import ytSearch from 'yt-search';
 
-export default function Download() {
+
+export default async function Download() {
     function select(url) { 
-        ytdl(url, { filter: 'audioonly' }).pipe()
     }
     function search(input) {
         if (input.startsWith('http')) {
             setOptions(input);
         } else {
-            setOptions(ytSearch(input));
+            setOptions((input));
         }
     }
     const [options, setOptions] = useState([]);
-    const options = [].map(el => {return () => (
-        <Pressable onPress={() => select(el.url)}>
-            <View style={style.option}>
-                <Text>el.title</Text>
-            </View>
-        </Pressable>
-    )});
 
     return (
         <View style={style.container}>

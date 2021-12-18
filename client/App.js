@@ -10,8 +10,8 @@ const { black, blue } = SharedUtilities.style;
 
 
 export default function App() {
-  const [open, setOpen] = useState(2);// to show it hasn't been opened yet
-  const [currentPage, setCurrentPage] = useState('Home');// to show it hasn't been opened yet
+  const [open, setOpen] = useState(2);// '2' -> in order to show it hasn't been opened yet
+  const [currentPage, setCurrentPage] = useState('Home');
 
   const [windowW, setW] = useState(Dimensions.get('window').width);
   const [windowH, setH] = useState(Dimensions.get('window').height);
@@ -21,7 +21,7 @@ export default function App() {
   Dimensions.addEventListener('change', (change) => {
     setW(change.window.width);
     setH(change.window.height);
-  })
+  });
 
   const Body = routes[currentPage];
 

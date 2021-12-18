@@ -3,12 +3,8 @@ import { Text, View, Image, StyleSheet, Animated, Pressable, Dimensions } from '
 import SharedUtilities from "../SharedUtilities";
 const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
 
-
-
-
-
 function Icon({ setOpen, unit }) {
-  const style = StyleSheet.create({
+  const styles = StyleSheet.create({
     SideMenuIconCenter: {
       position: 'absolute',
       backgroundColor: darkgray,
@@ -59,20 +55,20 @@ function Icon({ setOpen, unit }) {
   })
   return (
   <>
-    <Pressable onPress={() => setOpen(true)} style={style.SideMenuIconCenter}>
-      <Image style={style.image} source={require('../assets/music logo.jpg')}/>
-      <View style={style.SideMenuIconDown}></View>
-      <View style={style.SideMenuIconLeft}></View>
+    <Pressable onPress={() => setOpen(true)} style={styles.SideMenuIconCenter}>
+      <Image style={styles.image} source={require('../assets/music logo.jpg')}/>
+      <View style={styles.SideMenuIconDown}></View>
+      <View style={styles.SideMenuIconLeft}></View>
     </Pressable>
-      <View style={style.SideMenuIconDownCover}></View>
-      <View style={style.SideMenuIconLeftCover}></View>
+      <View style={styles.SideMenuIconDownCover}></View>
+      <View style={styles.SideMenuIconLeftCover}></View>
   </>
-  );// outside so that it doesn't activate the touch
+  );// the last 2 Views are outside of the Pressable, so that they don't activate the touch
 }
 
 function SideBar({ setOpen, setCurrentPage, unit }) {
   unit = unit / 2;
-  const style = StyleSheet.create({
+  const styles = StyleSheet.create({
     container: {
       backgroundColor: gray,
     },  
@@ -144,9 +140,9 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
   });
   function OptionsText({children, route}) {
       return (
-          <Pressable onPress={() => {setOpen(false);setCurrentPage(route);}} style={style.buttonContainer}>
-            <View style={style.begin}/>
-            <Text style={style.buttonText}>
+          <Pressable onPress={() => {setOpen(false);setCurrentPage(route);}} style={styles.buttonContainer}>
+            <View style={styles.begin}/>
+            <Text style={styles.buttonText}>
               {children}
             </Text>
           </Pressable>
@@ -155,23 +151,20 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
 
 
   return (
-    <View style={style.container}>
+    <View style={styles.container}>
         <OptionsText route={'Home'}>Home</OptionsText>
         <OptionsText route={'Playlists'}>Playlists</OptionsText>
         <OptionsText route={'Artists'}>Artists</OptionsText>
         <OptionsText route={'Download'}>Add song</OptionsText>
         <OptionsText route={'Settings'}>Settings</OptionsText>
-        <View style={style.curve}>
-          <View style={style.CurveLeft}/>
-          <View style={style.CurveRight}/>
-          <View style={style.CurveLeftCover}/>
+        <View style={styles.curve}>
+          <View style={styles.CurveLeft}/>
+          <View style={styles.CurveRight}/>
+          <View style={styles.CurveLeftCover}/>
         </View>
     </View>
   )
 }
-
-
-
 
 export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
   let iconAnim, optionsAnim;
