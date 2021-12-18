@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Dimensions, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
-import routes from './client/routes/main body/index.js';
-import SideMenu from './client/routes/SideMenu.js';
+import routes from './client/routes/index.js';
+import SideMenu from './client/SideMenu.js';
 import SharedUtilities from './client/SharedUtilities.js';
 const { black, blue } = SharedUtilities.style;
 
@@ -22,7 +22,6 @@ export default function App() {
     setW(change.window.width);
     setH(change.window.height);
   });
-
   const Body = routes[currentPage];
 
   return (

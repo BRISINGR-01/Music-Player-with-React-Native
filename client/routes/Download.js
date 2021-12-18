@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
-import SharedUtilities from '../../SharedUtilities';
+import SharedUtilities from '../SharedUtilities';
 const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
 
 
-export default async function Download() {
+export default function Download() {
     function select(url) { 
     }
     function search(input) {
@@ -14,16 +14,16 @@ export default async function Download() {
             setOptions((input));
         }
     }
-    const [options, setOptions] = useState([]);
+    const [options, setOptions] = useState([{title:'hi'}]);
 
     return (
         <View style={style.container}>
             <TextInput onTextInput={search} style={style.input}></TextInput>
             <View style={style.optionsContainer}>
-                {options.map(el => 
+                {options.length !== 0 && options.map(el => 
                     <Pressable onPress={() => select(el.url)}>
                         <View style={style.option}>
-                            <Text>el.title</Text>
+                            <Text style={{color:white}} children={el.title}></Text>
                         </View>
                     </Pressable>
                 )}
@@ -36,7 +36,6 @@ const style = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
 
         top: '10vh',
         width: '80%'

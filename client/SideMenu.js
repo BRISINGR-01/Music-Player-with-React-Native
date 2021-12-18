@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Image, StyleSheet, Animated, Pressable, Dimensions } from 'react-native'
-import SharedUtilities from "../SharedUtilities";
+import SharedUtilities from "./SharedUtilities";
 const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
 
 function Icon({ setOpen, unit }) {
