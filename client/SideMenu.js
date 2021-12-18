@@ -12,20 +12,22 @@ function Icon({ setOpen, unit }) {
       height: unit,
       borderBottomRightRadius: '50%'
     },
-    SideMenuIconLeft: {
+    SideMenuIconRight: {
       position: 'absolute',
       left: unit,
       backgroundColor: darkgray,
       width: unit,
       height: unit / 2,
+      borderBottomRightRadius: '100%',
     },
-    SideMenuIconLeftCover: {
+    SideMenuIconRightCover: {
       position: 'absolute',
       left: unit,
       backgroundColor: blue,
       width: unit,
       height: unit / 2,
       borderTopLeftRadius: '100%',
+      borderBottomRightRadius: '90%',
     },
     SideMenuIconDown: {
       position: 'absolute',
@@ -58,10 +60,10 @@ function Icon({ setOpen, unit }) {
     <Pressable onPress={() => setOpen(true)} style={styles.SideMenuIconCenter}>
       <Image style={styles.image} source={require('../assets/music logo.jpg')}/>
       <View style={styles.SideMenuIconDown}></View>
-      <View style={styles.SideMenuIconLeft}></View>
+      <View style={styles.SideMenuIconRight}></View>
     </Pressable>
       <View style={styles.SideMenuIconDownCover}></View>
-      <View style={styles.SideMenuIconLeftCover}></View>
+      <View style={styles.SideMenuIconRightCover}></View>
   </>
   );// the last 2 Views are outside of the Pressable, so that they don't activate the touch
 }
@@ -156,6 +158,7 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
         <OptionsText route={'Playlists'}>Playlists</OptionsText>
         <OptionsText route={'Artists'}>Artists</OptionsText>
         <OptionsText route={'Download'}>Add song</OptionsText>
+        <OptionsText route={'Tags'}>Tags</OptionsText>
         <OptionsText route={'Settings'}>Settings</OptionsText>
         <View style={styles.curve}>
           <View style={styles.CurveLeft}/>

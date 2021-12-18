@@ -2,6 +2,7 @@ node_modules/
 .expo/
 dist/
 music/
+images/
 npm-debug.*
 *.jks
 *.p8

@@ -11,7 +11,7 @@ const { black, blue } = SharedUtilities.style;
 
 export default function App() {
   const [open, setOpen] = useState(2);// '2' -> in order to show it hasn't been opened yet
-  const [currentPage, setCurrentPage] = useState('Home');
+  const [currentPage, setCurrentPage] = useState('Download');
 
   const [windowW, setW] = useState(Dimensions.get('window').width);
   const [windowH, setH] = useState(Dimensions.get('window').height);
@@ -46,6 +46,8 @@ const style = StyleSheet.create({
     position: 'absolute',
     width:'100vw', 
     height:'100vh', 
+    display: 'flex',
+    alignItems: 'center',
     backgroundColor: blue,
     zIndex: -1,
   }
