@@ -3,6 +3,8 @@ import { Dimensions, View, StyleSheet, TouchableWithoutFeedback } from 'react-na
 
 import routes from './client/routes/index.js';
 import SideMenu from './client/SideMenu.js';
+import settings from './settings.json';
+import { url } from './config.json';
 import SharedUtilities from './client/SharedUtilities.js';
 const { black, blue } = SharedUtilities.style;
 
@@ -17,11 +19,27 @@ export default function App() {
   const [windowH, setH] = useState(Dimensions.get('window').height);
   let unit = (windowH + windowW) / 20;
 
-
   Dimensions.addEventListener('change', (change) => {
     setW(change.window.width);
     setH(change.window.height);
   });
+
+  if (settings.promptUserToDownloadSongs)
+    fetch(`${url}/promptToDownload`).then(res => res.json()).then(res => {
+      if (res.length) {
+        // prompt user
+
+        res = JSON.stringify(res.map(el => el.url));
+        fetch(`${url}/downloadAll`, {
+          method: 'POST',
+          body: res
+        })
+        .catch(console.log)
+        //prompt user to download all songs which aren't downloaded on the current device, but are in the database
+      }
+    })
+    .catch(console.log)
+  
   const Body = routes[currentPage];
 
   return (

@@ -2,5 +2,6 @@
     "visualizer": {
         "position": "down",
         "type": "middle"
-    }
+    },
+    "promptUserToDownloadSongs": true
 }
