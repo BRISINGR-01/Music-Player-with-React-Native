@@ -5,8 +5,8 @@ const http = require('http');
 const ytSearch = require('yt-search');
 
 const download = require('./download');
-const musicData = require('../musicData.json');
-// const settings = require('../settings.json');
+const musicData = require('./musicData.json');
+// const settings = require('./settings.json');
 const musicFolderPath = path.resolve(__dirname, '../music');
 
 async function routes(req, res) {
@@ -39,9 +39,8 @@ async function routes(req, res) {
     if (action === 'delete') {
         fs.unlinkSync(path.resolve(__dirname, '../images', query + '.jpg'));
         fs.unlinkSync(path.resolve(__dirname, '../music', query + '.mp3'));
-        let musicData = require('../musicData.json');
         musicData = musicData.filter(el => el.name !== query);
-        fs.writeFileSync(path.resolve(__dirname, '../musicData.json'), JSON.stringify(musicData));
+        fs.writeFileSync(path.resolve(__dirname, './musicData.json'), JSON.stringify(musicData));
         return res.end();
     }
 
@@ -61,7 +60,7 @@ async function routes(req, res) {
                 });
             }
         }
-
+        console.log(songsToDownload);
         res.write(JSON.stringify(songsToDownload));
         return res.end();
     }

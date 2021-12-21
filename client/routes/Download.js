@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Pressable, Animated } from "react-native";
 import SharedUtilities from '../SharedUtilities';
 const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
-import { url } from "../../config.json";
+import { url } from "../../server/config.json";
 
 function Loader() {
     const animation = {

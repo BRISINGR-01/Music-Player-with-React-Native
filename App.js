@@ -3,17 +3,39 @@ import { Dimensions, View, StyleSheet, TouchableWithoutFeedback } from 'react-na
 
 import routes from './client/routes/index.js';
 import SideMenu from './client/SideMenu.js';
-import settings from './settings.json';
-import { url } from './config.json';
+import settings from './server/settings.json';
+import { url } from './server/config.json';
+import messages from './client/userMessages/messages.json'
 import SharedUtilities from './client/SharedUtilities.js';
+import UserMessage from './client/userMessages/UserMessage.js';
 const { black, blue } = SharedUtilities.style;
+import { AsyncStorage } from 'react-native';
+    
+const HAS_LAUNCHED = 'hasLaunched';
 
+function setAppLaunched() {
+  AsyncStorage.setItem(HAS_LAUNCHED, 'true');
+}
+
+export default async function checkIfFirstLaunch() {
+  try {
+    const hasLaunched = await AsyncStorage.getItem(HAS_LAUNCHED);
+    if (hasLaunched === null) {
+      setAppLaunched();
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+}
 
 
 
 export default function App() {
   const [open, setOpen] = useState(2);// '2' -> in order to show it hasn't been opened yet
   const [currentPage, setCurrentPage] = useState('Download');
+  const [userMessage, setUserMessage] = useState({text: false});
 
   const [windowW, setW] = useState(Dimensions.get('window').width);
   const [windowH, setH] = useState(Dimensions.get('window').height);
@@ -24,27 +46,52 @@ export default function App() {
     setH(change.window.height);
   });
 
-  if (settings.promptUserToDownloadSongs)
-    fetch(`${url}/promptToDownload`).then(res => res.json()).then(res => {
+  if (settings.promptUserToDownloadSongs) {
+    fetch(`${url}/promptToDownload`).then(res => res.json()).then(async res => {
+      console.log(res);
       if (res.length) {
         // prompt user
+        setUserMessage({
+          text: messages.promptToDownload,
+          arr: res.map(el => '· ' + el.title),
+          type: ['yes', 'no']
+        });
+        return;
+        return new Promise((resolve, reject) => {
 
-        res = JSON.stringify(res.map(el => el.url));
-        fetch(`${url}/downloadAll`, {
-          method: 'POST',
-          body: res
+
+
+
+
+
+
+
+
+
+
+
+
+        }).then(flag => {
+          if (!flag) return;
+          
+          res = JSON.stringify(res.map(el => el.url));
+          fetch(`${url}/downloadAll`, {
+            method: 'POST',
+            body: res
+          })
+          .catch(console.log);
         })
-        .catch(console.log)
         //prompt user to download all songs which aren't downloaded on the current device, but are in the database
       }
     })
     .catch(console.log)
-  
+  }
   const Body = routes[currentPage];
 
   return (
     <View style={style.app}>
         <SideMenu unit={unit} open={open} setOpen={setOpen} setCurrentPage={setCurrentPage}/>
+        {userMessage.text && <UserMessage body={userMessage}/>}
         <TouchableWithoutFeedback onPress={() => open !== 2 && setOpen(false)}>
             <View style={style.body}>
               <Body/>
