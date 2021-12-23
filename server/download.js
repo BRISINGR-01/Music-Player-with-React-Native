@@ -11,12 +11,7 @@ const imagesFolderPath = path.resolve(__dirname, '../images');
 
 module.exports = async (query, res) => {
     const vidUrl = query;
-    if (!vidUrl.startsWith('https://www.youtube.com/watch?v=') && !vidUrl.startsWith('https://youtube.com/watch?v=')) {
-        res.write(JSON.stringify({
-            error: true
-        }));
-        return res.end();
-    };
+    if (vidUrl.startsWith('https://www.youtube.com/watch?v=') && !vidUrl.startsWith('https://youtube.com/watch?v=')) return res.end();
     const musicData = require('./musicData.json');
     const excludedTags = require('./excludedTags.json');
     
@@ -37,14 +32,13 @@ module.exports = async (query, res) => {
 
     if (!musicData.find(el => el.title === vidName)) {
         musicData.push(profile);
-        console.log(__dirname, './musicData.json');
         fs.writeFileSync(path.resolve(__dirname, './musicData.json'), JSON.stringify(musicData));
     }// if this data doesn't exist, add it
     if (!fs.readdirSync(imagesFolderPath).includes(vidName + '.jpg')) {
         const imageUrl = data.thumbnails.find(el => el.width === 336).url;
         https.request(imageUrl, resImage => {
             let body = new Stream();
-            resImage.on('data', chunk => {console.log(chunk);body.push(chunk)});
+            resImage.on('data', chunk => body.push(chunk));
             resImage.on('end', () => {
                 let imagePath = path.resolve(imagesFolderPath, vidName + '.jpg');
                 fs.writeFileSync(imagePath, body.read());
@@ -55,22 +49,12 @@ module.exports = async (query, res) => {
         }).end();// download thumbnail
     }// if this image doesn't exist, add it
     if (!fs.readdirSync(path.resolve(imagesFolderPath, 'artists')).includes(artistName + '.jpg')) {
-//ToDo        
+//ToDo
     }// if this image doesn't exist, add it
     if (!fs.readdirSync(musicFolderPath).includes(vidName + '.mp3')) {
         const stream = ytdl(vidUrl, { filter: 'audioonly'}).pipe(fs.createWriteStream(path.resolve(musicFolderPath, vidName + '.mp3')));
 
-        stream.on('finish', () => {
-            res.write(JSON.stringify({
-                done: true
-            }));
-            return res.end();
-        }); 
-        stream.on('error', (err) => {
-            res.write(JSON.stringify({
-                error: true
-            }));
-            return res.end();
-        });
+        stream.on('finish', () => res.end()); 
+        stream.on('error', (err) => res.end());
     }// if this video doesn't exist, add it
 }

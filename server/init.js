@@ -6,7 +6,6 @@ const ytSearch = require('yt-search');
 
 const download = require('./download');
 const musicData = require('./musicData.json');
-// const settings = require('./settings.json');
 const musicFolderPath = path.resolve(__dirname, '../music');
 
 async function routes(req, res) {
@@ -60,7 +59,6 @@ async function routes(req, res) {
                 });
             }
         }
-        console.log(songsToDownload);
         res.write(JSON.stringify(songsToDownload));
         return res.end();
     }
@@ -72,10 +70,10 @@ async function routes(req, res) {
             buffers.push(chunk.toString());
         }
 
-        const songs = JSON.parse(Buffer.concat(buffers));
+        const songs = JSON.parse(buffers.join(''));
 
         for (let i = 0; i < songs.length; i++) {
-            download(songs[i], res);   
+            download(songs[i].url, res);   
         }
 
         return res.end();

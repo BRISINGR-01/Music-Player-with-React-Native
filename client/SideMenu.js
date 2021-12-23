@@ -23,7 +23,7 @@ function Icon({ setOpen, unit }) {
     SideMenuIconRightCover: {
       position: 'absolute',
       left: unit,
-      backgroundColor: blue,
+      backgroundColor: black,
       width: unit,
       height: unit / 2,
       borderTopLeftRadius: '100%',
@@ -40,7 +40,7 @@ function Icon({ setOpen, unit }) {
     SideMenuIconDownCover: {
       position: 'absolute',
       top: unit,
-      backgroundColor: blue,
+      backgroundColor: black,
       width: unit / 2,
       height: unit,
       borderTopLeftRadius: '100%',
@@ -72,16 +72,17 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
   unit = unit / 2;
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: gray,
-    },  
-    options: {
-      borderColor: black,
-      borderRightWidth: 4,
-
-      backgroundColor: darkgray,
-
-      width: '20%',
-      height: '10vh'
+      zIndex: 0,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      backgroundColor: white,
+      width: '150%',
+      height: '150%',
+    },
+    optionsContainer: {
+      zIndex: 1,
+      width: '75%',
     },
     buttonContainer: {
       width: '100%',
@@ -106,37 +107,53 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
       height: '100%',
       backgroundColor: blue
     },
-    curve: {
-      display: 'flex',
-      width: '100%',
-      flexWrap: 'wrap',
-      flexDirection: 'row',
-      backgroundColor: blue,
+    CurveBottomContainer: {
+      marginTop: '-100%'
     },
-
-    CurveLeft: {
+    CurveLeftBottom: {
       height: 2 * unit,
       width:'50%',
       backgroundColor: darkgray,
     },
-    CurveLeftCover: {
+    CurveLeftCoverBottom: {
       height: unit,
       width: '50%',
       marginTop: - unit,
-      backgroundColor: blue,
+      backgroundColor: black,
       borderTopLeftRadius: '100%',
     },
-    CurveRight: {
+    CurveRightBottom: {
       height: unit,
       width: '50%',
       backgroundColor: darkgray,
       borderBottomRightRadius: '100%'
     },
-    CurveRightCover: {
-      height: unit,
+    
+    CurveRightContainer: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+      // marginLeft: 4 * unit,
+      // marginTop: -6 * unit,
+    },
+    CurveTopRight: {
+      height: '50%',
+      width: '100%',
+      backgroundColor: darkgray,
+    },
+    CurveTopRightCover: {
+      height: '50%',
       width: '50%',
-      zIndex: 20,
-      backgroundColor: blue,
+      marginTop: -2 * unit,
+      marginleft: -2 * unit,
+      backgroundColor: black,
+      borderTopLeftRadius: '100%',
+    },
+    CurveBottomRight: {
+      // marginLeft: unit,
+      height: '50%',
+      width: '50%',
+      backgroundColor: darkgray,
       borderBottomRightRadius: '100%'
     },
   });
@@ -154,17 +171,24 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.optionsContainer}>  
         <OptionsText route={'Home'}>Home</OptionsText>
         <OptionsText route={'Playlists'}>Playlists</OptionsText>
         <OptionsText route={'Artists'}>Artists</OptionsText>
         <OptionsText route={'Download'}>Add song</OptionsText>
         <OptionsText route={'Tags'}>Tags</OptionsText>
         <OptionsText route={'Settings'}>Settings</OptionsText>
-        <View style={styles.curve}>
-          <View style={styles.CurveLeft}/>
-          <View style={styles.CurveRight}/>
-          <View style={styles.CurveLeftCover}/>
-        </View>
+      </View>
+      <View style={styles.CurveBottomContainer}>
+        <View style={styles.CurveLeftBottom}/>
+        <View style={styles.CurveRightBottom}/>
+        <View style={styles.CurveLeftCoverBottom}/>
+      </View>
+      <View style={styles.CurveContainer}>
+        <View style={styles.CurveLeftBottom}/>
+        <View style={styles.CurveRightBottom}/>
+        <View style={styles.CurveLeftCoverBottom}/>
+      </View>
     </View>
   )
 }
