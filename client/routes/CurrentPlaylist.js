@@ -4,7 +4,7 @@ import { palette } from '../SharedUtilities.js';
 const { blue, darkgray, gray, white } = palette;
 
 
-export default function Home() {
+export default function CurrentPlaylist() {
     return (
         <Text>Hi</Text>
     );    

@@ -1,65 +1,96 @@
 import React, { useState } from 'react';
-import { Dimensions, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Dimensions, View, StyleSheet, TouchableWithoutFeedback, BackHandler } from 'react-native';
+
+import Playlist from './client/Playlist.js';
 
 import routes from './client/routes/index.js';
 import SideMenu from './client/SideMenu.js';
 import settings from './server/settings.json';
+import UserMessage from './client/UserMessage.js';
 import { url } from './server/config.json';
-import messages from './client/userMessages/messages.json'
-import SharedUtilities from './client/SharedUtilities.js';
-import UserMessage from './client/userMessages/UserMessage.js';
-const { black, blue } = SharedUtilities.style;
+import { palette, messages } from './client/SharedUtilities.js';
+const { black } = palette;
+
 
 export default function App() {
   const [open, setOpen] = useState(2);// '2' -> in order to show it hasn't been opened yet
-  const [currentPage, setCurrentPage] = useState('Download');
+  const [currentPage, setCurrentPage] = useState('');// '' -> to detect the first rendering
   const [userMessage, setUserMessage] = useState(null);
-  const [firstOpen, setFirstOpen] = useState(true);
+  const [navigationHistory, setNavigationHistory] = useState(['Home']);
 
-  const [windowW, setW] = useState(Dimensions.get('window').width);
   const [windowH, setH] = useState(Dimensions.get('window').height);
-  let unit = (windowH + windowW) / 20;
+  Dimensions.addEventListener('change', (change) => setH(change.window.height));
+  let unit = windowH / 8;
 
-  Dimensions.addEventListener('change', (change) => {
-    setW(change.window.width);
-    setH(change.window.height);
+
+  const changePage = page => {
+    setCurrentPage(page);
+    let arr = navigationHistory;
+    if (page !== arr[arr.length - 1]) {// to prevent going back to the same page
+      arr.push(page);
+    }
+    setNavigationHistory(arr);
+  }
+  
+  require('./server/musicData.json').forEach(({title}) => Playlist.add(title))
+
+
+  BackHandler.addEventListener('hardwareBackPress', () => {
+    setOpen(2)// prevent weird animation when renedering
+    if (navigationHistory.length === 0) return false;
+    
+    let lastPage = navigationHistory.pop();
+    if (lastPage === currentPage) lastPage = navigationHistory.pop();
+    setCurrentPage(lastPage);
+    setNavigationHistory(navigationHistory);
+
+    return true;
   });
-  if (firstOpen && settings.promptUserToDownloadSongs) {
-    setFirstOpen(false);// tell that the app is already opened once
+  
+
+// console.log(0);
+  if (currentPage === '' && settings.promptUserToDownloadSongs) {
+    setCurrentPage('Player');
+    
     fetch(`${url}/promptToDownload`).then(res => res.json()).then(async res => {
-      console.log(res);
       if (res.length) {// res contains the songs as an array of [{title:..., url:...},...]
         return new Promise((resolve, reject) => {
+
           setUserMessage({// open user prompt
-            text: messages.promptToDownload,
+            ...messages.promptToDownload,
             arr: res.map(el => '· ' + el.title),
-            btns: ['Yes', 'No'],
             callback: ans => {
               setUserMessage(null);// close user prompt
-              if (ans === 'Yes') return resolve();
-              reject();
+              resolve(ans);
             }
           });
+
         }).then(() => {
+          if (ans === 'No') return;
+
           res = JSON.stringify(res);
           fetch(`${url}/downloadAll`, {
             method: 'POST',
             body: res
-          }).catch(console.log);
+          });
+        
         });
         //prompt user to download all songs which aren't downloaded on the current device, but are in the database
       }
     }).catch(() => {});
   }
-  const Body = routes[currentPage];
+  const Body = routes[currentPage || 'Player'];
+
+  // try Aha! by ptx (the ! is a problem )
+  // have the last song load when opened for the first time
 
   return (
     <View style={style.app}>
-        <SideMenu unit={unit} open={open} setOpen={setOpen} setCurrentPage={setCurrentPage}/>
+        <SideMenu unit={unit} open={open} setOpen={setOpen} setPage={changePage}/>
         {userMessage && <UserMessage body={userMessage}/>}
         <TouchableWithoutFeedback onPress={() => open !== 2 && setOpen(false)}>
             <View style={style.body}>
-              <Body/>
+              <Body Playlist={Playlist} setUserMessage={setUserMessage}/>
             </View>
         </TouchableWithoutFeedback>
     </View>
@@ -69,7 +100,7 @@ export default function App() {
 
 const style = StyleSheet.create({
   app: {
-    display: 'flexbox',
+    display: 'flex',
     flexDirection: 'row',
   },
   body: { 

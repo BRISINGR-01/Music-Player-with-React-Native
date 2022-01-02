@@ -13,8 +13,7 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var {client_id, client_secret, redirect_uri} = require('../../../config.json').spotify; // Your redirect uri
-console.log(redirect_uri);
+var { client_id, client_secret, redirect_uri } = require('./config.json').spotify; // Your redirect uri
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -140,6 +139,10 @@ app.get('/refresh_token', function(req, res) {
     }
   });
 });
+
+app.get('/me', (req, res) => {
+  
+})
 
 console.log('Listening on 8888');
 app.listen(8888);

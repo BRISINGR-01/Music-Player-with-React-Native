@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import SharedUtilities from '../SharedUtilities'
-const { gray, blue, black, darkgray, lightgray} = SharedUtilities.style;
+import { palette } from './SharedUtilities';
+const { blue, darkgray, gray, black, lightgray } = palette;
 
 export default function UserMessage({ body }) {
     let arr = body.arr || [];
@@ -29,9 +29,9 @@ export default function UserMessage({ body }) {
             <View style={styles.container}>
                 <Text style={styles.text}>{text}</Text>
                 <View style={styles.btnContainer}>
-                    {body.btns && body.btns.map((el, i) => 
+                    {body.buttons && body.buttons.map((el, i) => 
                         <Btn key={i} i={i}>{el}</Btn>
-                        )}
+                    )}
                 </View>
             </View>
         </>
@@ -45,15 +45,17 @@ const styles = StyleSheet.create({
         left: 0,
         width: '100vw',
         height: '100vh',
-        opacity: .5,
+        opacity: .7,
         backgroundColor: black,
         zIndex: 0,
     },  
     container: {
         position: 'absolute',
-        top: '50vh',
-        left: '50vw',
-        transform: 'translate(-50%, -100%)',
+        // top: '50vh',
+        // left: '50vw',
+      transform: [{translateX: '50%'}],
+
+        marginTop: '20vh',
         width: '50vw',
         backgroundColor: gray,
 
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         color: blue, 
-        fontSize: '1.3em'
+        fontSize: 20
     },
     btnContainer: {
         display: 'flex',

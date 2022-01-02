@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, Image, StyleSheet, Animated, Pressable, Dimensions } from 'react-native'
-import SharedUtilities from "./SharedUtilities";
-const { black, white, blue, gray, lightgray, darkgray } = SharedUtilities.style;
+import { palette } from './SharedUtilities';
+const { blue, darkgray, gray, black } = palette;
 
 function Icon({ setOpen, unit }) {
   const styles = StyleSheet.create({
@@ -68,29 +68,19 @@ function Icon({ setOpen, unit }) {
   );// the last 2 Views are outside of the Pressable, so that they don't activate the touch
 }
 
-function SideBar({ setOpen, setCurrentPage, unit }) {
+function SideBar({ setOpen, setPage, unit }) {
   unit = unit / 2;
   const styles = StyleSheet.create({
     container: {
-      zIndex: 0,
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      backgroundColor: white,
-      width: '150%',
-      height: '150%',
-    },
-    optionsContainer: {
-      zIndex: 1,
-      width: '75%',
-    },
+      backgroundColor: gray,
+    },  
     buttonContainer: {
+      display: 'flex',
+      flexDirection: 'row',
       width: '100%',
       maxHeight: 30,
       overflow: 'hidden',
-  
-      display: 'flex',
-      flexDirection: 'row',
+      
   
       borderColor: black,
       borderBottomWidth: 2,
@@ -107,61 +97,55 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
       height: '100%',
       backgroundColor: blue
     },
-    CurveBottomContainer: {
-      marginTop: '-100%'
+    end: {
+      width: '2.5%',
+      height: '100%',
+      left: '100%',
+      transform: [{translateX: '-200%'}],
+      
+      backgroundColor: darkgray,
     },
-    CurveLeftBottom: {
+    curve: {
+      display: 'flex',
+      width: '100%',
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+      backgroundColor: black,
+    },
+
+    CurveLeft: {
       height: 2 * unit,
       width:'50%',
       backgroundColor: darkgray,
     },
-    CurveLeftCoverBottom: {
+    CurveLeftCover: {
       height: unit,
       width: '50%',
       marginTop: - unit,
       backgroundColor: black,
       borderTopLeftRadius: '100%',
     },
-    CurveRightBottom: {
+    CurveRight: {
       height: unit,
       width: '50%',
       backgroundColor: darkgray,
       borderBottomRightRadius: '100%'
     },
-    
-    CurveRightContainer: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      flexDirection: 'row',
-      // marginLeft: 4 * unit,
-      // marginTop: -6 * unit,
-    },
-    CurveTopRight: {
-      height: '50%',
-      width: '100%',
-      backgroundColor: darkgray,
-    },
-    CurveTopRightCover: {
-      height: '50%',
+    CurveRightCover: {
+      height: unit,
       width: '50%',
-      marginTop: -2 * unit,
-      marginleft: -2 * unit,
+      zIndex: 20,
       backgroundColor: black,
-      borderTopLeftRadius: '100%',
-    },
-    CurveBottomRight: {
-      // marginLeft: unit,
-      height: '50%',
-      width: '50%',
-      backgroundColor: darkgray,
       borderBottomRightRadius: '100%'
     },
   });
+
   function OptionsText({children, route}) {
       return (
-          <Pressable onPress={() => {setOpen(false);setCurrentPage(route);}} style={styles.buttonContainer}>
+          <Pressable onPress={() => {setOpen(false);setPage(route)}} style={styles.buttonContainer}>
             <View style={styles.begin}/>
-            <Text style={styles.buttonText}>
+            <View style={styles.end}/>
+            <Text numberOfLines={1} style={styles.buttonText}>
               {children}
             </Text>
           </Pressable>
@@ -171,30 +155,24 @@ function SideBar({ setOpen, setCurrentPage, unit }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.optionsContainer}>  
-        <OptionsText route={'Home'}>Home</OptionsText>
+        <OptionsText route={'Player'}>Home</OptionsText>
+        <OptionsText route={'Download'}>Add song</OptionsText>
+        <OptionsText route={'CurrentPlaylist'}>Current Playlist</OptionsText>
         <OptionsText route={'Playlists'}>Playlists</OptionsText>
         <OptionsText route={'Artists'}>Artists</OptionsText>
-        <OptionsText route={'Download'}>Add song</OptionsText>
         <OptionsText route={'Tags'}>Tags</OptionsText>
         <OptionsText route={'Settings'}>Settings</OptionsText>
-      </View>
-      <View style={styles.CurveBottomContainer}>
-        <View style={styles.CurveLeftBottom}/>
-        <View style={styles.CurveRightBottom}/>
-        <View style={styles.CurveLeftCoverBottom}/>
-      </View>
-      <View style={styles.CurveContainer}>
-        <View style={styles.CurveLeftBottom}/>
-        <View style={styles.CurveRightBottom}/>
-        <View style={styles.CurveLeftCoverBottom}/>
-      </View>
+        <View style={styles.curve}>
+          <View style={styles.CurveLeft}/>
+          <View style={styles.CurveRight}/>
+          <View style={styles.CurveLeftCover}/>
+        </View>
     </View>
   )
 }
+export default function SideMenu({ open, setOpen, setPage, unit }) {
+  let iconAnim, optionsAnim, width = 3 * unit;
 
-export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
-  let iconAnim, optionsAnim;
   
   if (open === true) {
     iconAnim = new Animated.Value(0);
@@ -202,7 +180,7 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
     Animated.timing(
       iconAnim,
       {
-        toValue: - 2 * unit,
+        toValue: - width,
         duration: 500,
         useNativeDriver: false
       }
@@ -210,15 +188,15 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
     Animated.timing(
       optionsAnim,
       {
-        toValue: 2 * unit,
+        toValue: width,
         delay: 250,
         duration: 400,
         useNativeDriver: false
       }
     ).start();
   } else if (open === false) {
-    iconAnim = new Animated.Value(-2 * unit);
-    optionsAnim = new Animated.Value(2 * unit);
+    iconAnim = new Animated.Value(- width);
+    optionsAnim = new Animated.Value(width);
     Animated.timing(
       optionsAnim,
       {
@@ -242,7 +220,7 @@ export default function SideMenu({ open, setOpen, setCurrentPage, unit }) {
   }
   return (<>
     <Animated.View style={{width: optionsAnim}}>
-      <SideBar unit={unit} setOpen={setOpen} setCurrentPage={setCurrentPage}/>
+      <SideBar unit={unit} setOpen={setOpen} setPage={setPage}/>
     </Animated.View>
     <Animated.View style={{top: iconAnim, left: iconAnim}}>
       <Icon unit={unit} setOpen={setOpen}/>

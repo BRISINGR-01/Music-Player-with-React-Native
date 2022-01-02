@@ -11,7 +11,7 @@ const imagesFolderPath = path.resolve(__dirname, '../images');
 
 module.exports = async (query, res) => {
     const vidUrl = query;
-    if (vidUrl.startsWith('https://www.youtube.com/watch?v=') && !vidUrl.startsWith('https://youtube.com/watch?v=')) return res.end();
+    if (!vidUrl.startsWith('https://www.youtube.com/watch?v=') && !vidUrl.startsWith('https://youtube.com/watch?v=')) return res.end();
     const musicData = require('./musicData.json');
     const excludedTags = require('./excludedTags.json');
     
