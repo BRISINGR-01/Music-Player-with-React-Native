@@ -93,7 +93,7 @@ function SideBar({ setOpen, setPage, unit }) {
       maxHeight: 30,
     },
     begin: {
-      width: '2.5%',
+      width: 4,
       height: '100%',
       backgroundColor: blue
     },

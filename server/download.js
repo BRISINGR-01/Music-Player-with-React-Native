@@ -5,9 +5,17 @@ var Stream = require('stream').Transform;
 
 const ytdl = require('ytdl-core');
 
-const musicFolderPath = path.resolve(__dirname, '../music');
+const musicFolderPath = path.resolve(__dirname, '../assets/music');
 const imagesFolderPath = path.resolve(__dirname, '../images');
 
+function validateName(name) {
+    if (!name) return false;
+	if (name.length > 255) return false;
+	if (new RegExp(/[<>:"/\\|?*\u0000-\u001F]/g).test(name) || new RegExp(/^(con|prn|aux|nul|com\d|lpt\d)$/i).test(name)) return false;
+	if (name === '.' || name === '..') return false;
+    
+    return true;
+}// taken from https://github.com/sindresorhus/valid-filename
 
 module.exports = async (query, res) => {
     const vidUrl = query;
@@ -21,12 +29,18 @@ module.exports = async (query, res) => {
     const vidName = data.media.song ? 
                         `${data.media.song} - ${artistName}` :
                     data.title
-
+    let pathName = data.media.song ? 
+                        `${data.media.song.replace(/\s+/g, '_')}-${artistName.replace(/\s+/g, '_')}` :
+                    data.title.replace(/\s+/g, '_');
+    //path must be appropriate
+    
+//toDo    if (!validateName(pathName)) pathName = 'uuid?';
                     
     const profile = {
         artist: artistName,
         title: vidName,
         url: data.video_url,
+        pathName: pathName,
         tags: data.keywords?.filter(tag => !excludedTags.includes(tag)),
     }
 
@@ -51,8 +65,8 @@ module.exports = async (query, res) => {
     if (!fs.readdirSync(path.resolve(imagesFolderPath, 'artists')).includes(artistName + '.jpg')) {
 //ToDo
     }// if this image doesn't exist, add it
-    if (!fs.readdirSync(musicFolderPath).includes(vidName + '.mp3')) {
-        const stream = ytdl(vidUrl, { filter: 'audioonly'}).pipe(fs.createWriteStream(path.resolve(musicFolderPath, vidName + '.mp3')));
+    if (!fs.readdirSync(musicFolderPath).includes(pathName + '.mp3')) {
+        const stream = ytdl(vidUrl, { filter: 'audioonly'}).pipe(fs.createWriteStream(path.resolve(musicFolderPath, pathName + '.mp3')));
 
         stream.on('finish', () => res.end()); 
         stream.on('error', (err) => res.end());

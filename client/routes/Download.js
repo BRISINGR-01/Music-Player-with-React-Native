@@ -22,6 +22,7 @@ export default function Download() {
             setLoading(false);
             setTextValue('');
         });
+        fetch(`${url}/refreshSongs`);
     }
 
     function search() {

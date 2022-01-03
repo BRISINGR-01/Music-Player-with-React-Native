@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, View, Dimensions, Image, Text } from 'react-native';
 import { Audio } from 'expo-av';
+import * as s from '../../assets/music'
+import musicData from '../../server/musicData.json'
 import { url } from '../../server/config.json'
 import { palette, messages } from '../SharedUtilities';
 const { blue, darkgray, gray } = palette;
@@ -16,32 +18,32 @@ function PlayBtn({ sound, unit, setIsPaused, isPaused }) {
         container: {
             width: unit,
             height: unit,
-            borderRadius: '50%',
+            borderRadius: unit / 2,
             backgroundColor: darkgray,
 
             display: 'flex',
             flexDirection: 'row',
-            gap: 8.5,   
             alignItems: 'center',
             justifyContent: 'center',
         },
         arrow: {
             width: 0,
             height: 0,
-            transform: [{translateX: '10%'}, {scale: '70%'}],
+            transform: [{translateX: 5}, {scale: .7}],
 
             borderBottomWidth: unit / 3,
             borderTopWidth: unit / 3,
             borderLeftWidth: unit * 2 / 3,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderLeftColor: blue,
         },
         rectangle: {
+            margin: 4,
             height: '40%',
-            width: '12%',
+            width: '12%',  
             backgroundColor: blue,
-
         }
     });
     async function onPress() {
@@ -75,74 +77,80 @@ function NextSong({ unit, next }) {
         container: {
             width: unit,
             height: unit,
-            borderRadius: '50%',
+            borderRadius: unit / 2,
             backgroundColor: gray,
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+
         },
         front: {
             zIndex: 2,
+            position: 'absolute',
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            transform: [{translateX: '45%'}],
         },
         back: {
+            position: 'absolute',
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            transform: [{translateX: '-50%'}],
         },
         arrowFront1: {
             width: 0,
             height: 0,
-            transform: [{translateX: '20%'}, {scale: '70%'}],
-
+            transform: [{translateX: 25}, {scale: .70}],
+            
+            backgroundColor: "transparent",
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderLeftWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderLeftColor: blue,
         },
         arrowFront2: {
             width: 0,
             height: 0,
-            transform: [{translateX: '-30%'}, {scale: '70%'}],
+            transform: [{translateX: -25}, {scale: .70}],
 
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderLeftWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderLeftColor: blue,
         },
         arrowBack1: {
             width: 0,
             height: 0,
-            transform: [{translateX: '20%'}, {scale: '150%'}],
+            transform: [{translateX: 30}, {scale: 1.50}],
 
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderLeftWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderLeftColor: darkgray,
         },
         arrowBack2: {
             width: 0,
             height: 0,
-            transform: [{translateX: '-30%'}, {scale: '150%'}],
+            transform: [{translateX: -20}, {scale: 1.50}],
 
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderLeftWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderLeftColor: darkgray,
         }
     });
@@ -164,74 +172,83 @@ function PreviousSong({ unit, prev }) {
         container: {
             width: unit,
             height: unit,
-            borderRadius: '50%',
+            borderRadius: unit / 2,
             backgroundColor: gray,
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+
+
         },
         front: {
             zIndex: 2,
+            position: 'absolute',
+
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            transform: [{translateX: '55%'}],
         },
         back: {
+            position: 'absolute',
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            transform: [{translateX: '-50%'}],
         },
         arrowFront1: {
             width: 0,
             height: 0,
-            transform: [{translateX: '20%'}, {scale: '70%'}],
+            transform: [{translateX: 25}, {scale: .70}],
 
+            
+            backgroundColor: "transparent",
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderRightWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderRightColor: blue,
         },
         arrowFront2: {
             width: 0,
             height: 0,
-            transform: [{translateX: '-30%'}, {scale: '70%'}],
+            transform: [{translateX: -25}, {scale: .70}],
 
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderRightWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderRightColor: blue,
         },
         arrowBack1: {
             width: 0,
             height: 0,
-            transform: [{translateX: '20%'}, {scale: '150%'}],
+            transform: [{translateX: 20}, {scale: 1.50}],
 
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderRightWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderRightColor: darkgray,
         },
         arrowBack2: {
             width: 0,
             height: 0,
-            transform: [{translateX: '-30%'}, {scale: '150%'}],
+            transform: [{translateX: -30}, {scale: 1.50}],
 
             borderBottomWidth: unit / 5,
             borderTopWidth: unit / 5,
             borderRightWidth: unit * 2 / 5,
 
-            borderColor: 'transparent',
+            borderTopColor: "transparent",
+            borderBottomColor: "transparent",
             borderRightColor: darkgray,
         }
     });
@@ -268,7 +285,7 @@ function Edit({ unit }) {
     }
     return (
         <Pressable onPress={onPress} style={styles.container}>
-            <Image style={styles.img} source={require('../../assets/gear-1.1s-200px.svg')}/>
+            <Image style={styles.img} source={require('../../assets/gear.png')}/>
         </Pressable>
     )
 }
@@ -282,7 +299,7 @@ function Loop({ unit, sound, isLooping, setIsLooping }) {
             paddingBottom: unit / 5
         },
         selected: {
-            borderRadius: '50%',
+            borderRadius: unit / 3,
             backgroundColor: isLooping ? darkgray : 'transparent'
         },
         img: {
@@ -294,10 +311,11 @@ function Loop({ unit, sound, isLooping, setIsLooping }) {
         await sound?.setIsLoopingAsync(!isLooping);
         setIsLooping(!isLooping);
     }   
+   
     return (
         <Pressable onPress={onPress} style={styles.container}>
             <View style={styles.selected}>
-                <Image style={styles.img} source={require('../../assets/arrow.svg')}/>
+                <Image style={styles.img} source={require('../../assets/arrow.png')}/>
             </View>
         </Pressable>
     )
@@ -309,10 +327,10 @@ function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, t
     const styles = StyleSheet.create({
         container: {
             width: '100%',
-            height: '8px',
+            height: 8,
             borderColor: darkgray,
             borderTopWidth: 2,
-            borderBott0mWidth: 2,
+            borderBottomWidth: 2,
             backgroundColor: darkgray,
         },
         progress: {
@@ -332,8 +350,7 @@ function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, t
             color: blue,
         }
     });
-   
-
+    
     async function onPress(e) {
         progress = 100 * e.touchHistory.touchBank[0].currentPageX / windowW
         setProgress(progress);
@@ -354,11 +371,11 @@ function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, t
         m = m % 59
         m = m < 10 ? `0${m}` : m;
         h = h < 10 ? `0${h}` : h;
-
+        
         if (h === '00') return `${m}:${s}`;
         return `${h}:${m}:${s}`;
     }
-
+    
     return (
         <View onStartShouldSetResponder={(e) => {
                 sound?.pauseAsync();// *
@@ -380,6 +397,10 @@ function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, t
 }
 
 export default function Bar({ Playlist, setUserMessage }) {
+    const [windowW, setW] = useState(Dimensions.get('window').width);
+    const [windowH, setH] = useState(Dimensions.get('window').height);
+
+
     const styles = StyleSheet.create({
         container: {
             width: '100%',
@@ -388,7 +409,7 @@ export default function Bar({ Playlist, setUserMessage }) {
         },
         buttonsContainer: {
             width: '100%',
-            height: '100%',
+            height: '50%',
             
             // backgroundColor: white,
             display: 'flex',
@@ -398,8 +419,7 @@ export default function Bar({ Playlist, setUserMessage }) {
         }
     });
 
-    const [windowW, setW] = useState(Dimensions.get('window').width);
-    const [windowH, setH] = useState(Dimensions.get('window').height);
+    
     Dimensions.addEventListener('change', change => {
         setW(change.window.width);
         setH(change.window.height);
@@ -412,7 +432,7 @@ export default function Bar({ Playlist, setUserMessage }) {
     const [totalSec, setTotalSec] = useState(0);
     const [currentSong, setCurrentSong] = useState(Playlist.content[0]);
 
-
+// console.log(currentSong);
     let unit = windowW / 5
     if (windowW > windowH) unit = windowH / 8;
     if (windowW < windowH) unit = windowW / 5;
@@ -443,8 +463,10 @@ export default function Bar({ Playlist, setUserMessage }) {
             });
         }
         
+        song = musicData.find(el => el.title === song).pathName
+        
         const { sound } = await new Audio.Sound.createAsync(
-            require(`../../music/${song}.mp3`),
+            s[song],
             { shouldPlay: !isPaused },
             status => {
                 if (status.error) return warn();
@@ -466,46 +488,44 @@ export default function Bar({ Playlist, setUserMessage }) {
         : undefined;
     }, [sound]);
 
-    React.useEffect(() => {
-        play(currentSong);// runs by first render => the first song is loaded
+    React.useEffect(async () => {
+        await play(currentSong);// runs by first render => the first song is loaded
     }, [currentSong])
     
-    
-
     return (
-        <View style={styles.container}>
-            <Length 
-                sound={sound}
-                windowW={windowW}
-                isPaused={isPaused} 
-                progress={progress} 
-                setProgress={setProgress}
-                currnetSec={currnetSec}
-                totalSec={totalSec}
-            />
-            <View style={styles.buttonsContainer}>
-                <Loop 
+            <View style={styles.container}>
+                <Length 
                     sound={sound}
-                    unit={unit}
-                    isLooping={isLooping}
-                    setIsLooping={setIsLooping}
+                    windowW={windowW}
+                    isPaused={isPaused} 
+                    progress={progress} 
+                    setProgress={setProgress}
+                    currnetSec={currnetSec}
+                    totalSec={totalSec}
                 />
-                <PreviousSong unit={unit} prev={() => {
-                    setIsLooping(false);
-                    setCurrentSong(Playlist.prev());
-                }}/>
-                <PlayBtn 
-                    sound={sound}
-                    unit={unit} 
-                    setIsPaused={setIsPaused} 
-                    isPaused={isPaused}
-                />
-                <NextSong unit={unit} next={() => {
-                    setIsLooping(false);
-                    setCurrentSong(Playlist.next());
-                }}/>
-                <Edit unit={unit}/>
+                <View style={styles.buttonsContainer}>
+                    <Loop 
+                        sound={sound}
+                        unit={unit}
+                        isLooping={isLooping}
+                        setIsLooping={setIsLooping}
+                    />
+                    <PreviousSong unit={unit} prev={() => {
+                        setIsLooping(false);
+                        setCurrentSong(Playlist.prev());
+                    }}/>
+                    <PlayBtn 
+                        sound={sound}
+                        unit={unit} 
+                        setIsPaused={setIsPaused} 
+                        isPaused={isPaused}
+                    />
+                    <NextSong unit={unit} next={() => {
+                        setIsLooping(false);
+                        setCurrentSong(Playlist.next());
+                    }}/>
+                    <Edit unit={unit}/>
+                </View>
             </View>
-        </View>
     )
 }

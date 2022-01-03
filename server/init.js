@@ -6,7 +6,7 @@ const ytSearch = require('yt-search');
 
 const download = require('./download');
 const musicData = require('./musicData.json');
-const musicFolderPath = path.resolve(__dirname, '../music');
+const musicFolderPath = path.resolve(__dirname, '../assets/music');
 
 async function routes(req, res) {
     res.setHeader('Access-Control-Allow-Origin' , '*');
@@ -37,7 +37,7 @@ async function routes(req, res) {
 
     if (action === 'delete') {
         fs.unlinkSync(path.resolve(__dirname, '../images', query + '.jpg'));
-        fs.unlinkSync(path.resolve(__dirname, '../music', query + '.mp3'));
+        fs.unlinkSync(path.resolve(__dirname, '../music', musicData.find(el => el.title === query).pathName + '.mp3'));
         musicData = musicData.filter(el => el.name !== query);
         fs.writeFileSync(path.resolve(__dirname, './musicData.json'), JSON.stringify(musicData));
         return res.end();
@@ -47,12 +47,8 @@ async function routes(req, res) {
         const downloadedSongs = fs.readdirSync(musicFolderPath);
         let songsToDownload = [];
 
-        for (let i = 0; i < downloadedSongs.length; i++) {
-            downloadedSongs[i] = downloadedSongs[i].replace('.mp3', '');
-        }
         for (let i = 0; i < musicData.length; i++) {
-            let title = musicData[i].title;
-            if (!downloadedSongs.includes(title)) {
+            if (!downloadedSongs.includes(musicData[i].pathName + '.mp3')) {
                 songsToDownload.push({
                     title: musicData[i].title,
                     url: musicData[i].url,
@@ -76,6 +72,12 @@ async function routes(req, res) {
             download(songs[i].url, res);   
         }
 
+        return res.end();
+    }
+
+    if (action === 'refreshSongs') {
+        let songs = fs.readdirSync(musicFolderPath).filter(el => el !== 'index.js');
+        fs.writeFileSync(path.resolve(musicFolderPath, 'index.js'), `module.exports = {${songs.map(el => `\'${el.replace('.mp3', '')}\':require(\'./${el}\')`)}}`);
         return res.end();
     }
 

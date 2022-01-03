@@ -5,13 +5,13 @@ import Visualizer from '../player/Visualizer';
 import Carousel from '../player/Carousel';
 import Bar from '../player/Bar';
 
-export default function Player({ Playlist, setUserMessage }) {
+export default function Player({ window, Playlist, setUserMessage }) {
     return (
         <>
             <View style={styles.container}>
                 <View style={styles.Vc}>
                     <Visualizer/>
-                    <Carousel Playlist={Playlist}/>
+                    {/* <Carousel Playlist={Playlist}/> */}
                 </View>
                 <Bar Playlist={Playlist} setUserMessage={setUserMessage}/>
             </View>
@@ -21,8 +21,8 @@ export default function Player({ Playlist, setUserMessage }) {
 
 const styles = StyleSheet.create({
     container: {
-        height: '100vh',
-        width: '100vw',
+        height: '100%',
+        width: '100%',
         display: 'flex',
         justifyContent: 'flex-end',
         flexDirection: 'column'

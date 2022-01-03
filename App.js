@@ -32,8 +32,7 @@ export default function App() {
     setNavigationHistory(arr);
   }
   
-  require('./server/musicData.json').forEach(({title}) => Playlist.add(title))
-
+  console.log(currentPage);
 
   BackHandler.addEventListener('hardwareBackPress', () => {
     setOpen(2)// prevent weird animation when renedering
@@ -48,9 +47,9 @@ export default function App() {
   });
   
 
-// console.log(0);
   if (currentPage === '' && settings.promptUserToDownloadSongs) {
     setCurrentPage('Player');
+    require('./server/musicData.json').forEach(({title}) => Playlist.add(title))
     
     fetch(`${url}/promptToDownload`).then(res => res.json()).then(async res => {
       if (res.length) {// res contains the songs as an array of [{title:..., url:...},...]

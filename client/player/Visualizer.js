@@ -1,9 +1,9 @@
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import { ReactP5Wrapper } from "react-p5-wrapper";
-import * as P5 from 'p5'
-import './import';// it's just needed there
-import "p5/lib/addons/p5.sound";
+// import { ReactP5Wrapper } from "react-p5-wrapper";
+// import * as P5 from 'p5'
+// import './import';// it's just needed there
+// import "p5/lib/addons/p5.sound";
 
 import Canvas from 'react-native-canvas';
 import { canvas } from 'react-native-web';
@@ -112,7 +112,7 @@ export default function Visualizer({position, type, direction}) {
     if (Platform.OS === "web") {
         return (
             <View style={styles.container}>
-                <ReactP5Wrapper sketch={sketch} />;
+                {/* <ReactP5Wrapper sketch={sketch} />; */}
                 {/* <canvas ref={visualizer} /> */}
             </View>
         )
