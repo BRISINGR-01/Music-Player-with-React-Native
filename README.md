@@ -1,6 +1,6 @@
 # About
 
-A music player nade with react native on which I am still working.
+A music player made with react-native on which I am still working.
 
 # Content
 
