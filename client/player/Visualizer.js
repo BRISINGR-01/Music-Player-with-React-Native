@@ -1,12 +1,14 @@
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-// import { ReactP5Wrapper } from "react-p5-wrapper";
-// import * as P5 from 'p5'
-// import './import';// it's just needed there
-// import "p5/lib/addons/p5.sound";
+import { ReactP5Wrapper } from "react-p5-wrapper";
+import * as P5 from 'p5'
+import './import';// it's just needed there
+import "p5/lib/addons/p5.sound";
+import { url } from '../../server/config.json'
 
 import Canvas from 'react-native-canvas';
 import { canvas } from 'react-native-web';
+// import { Player, Recorder, MediaStates } from 'react-native-audio-toolkit';
 
 export default function Visualizer({position, type, direction}) {
     // position: down, up, sideways
@@ -15,20 +17,32 @@ export default function Visualizer({position, type, direction}) {
     // up/down: left, right
     // sideways: up, down
 
+    // let player = new Player(`https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3`).play()
+    // console.log(player);
+    // player.play()
+
     function sketch(p5) {
-        let amplitude, sound
+        let analyzer, sound
 
         p5.preload = () => {
-            p5.soundFormats('mp3', 'ogg');
-            sound = p5.loadSound(("../../music/Ed Sheeran - Shape Of You (bvd kult Remix).mp3"));
-            console.log(sound);
-            sound.play()
+            sound = p5.loadSound('http://localhost:3000/getSong/Immortals-Fall_Out_Boy')
         }
-        // p5.loadSound("../../music/Ed Sheeran - Shape Of You (bvd kult Remix).mp3");
         p5.setup = () => {
-            p5.createCanvas(600, 400, p5.WEBGL)
-            amplitude = new P5.Amplitude();
+            let canvas = p5.createCanvas(600, 400, p5.WEBGL)
+            analyzer = new P5.Amplitude();
+            canvas.mousePressed(canvasPressed)
         };
+        
+        let canvasPressed = () => {
+            console.log('hi');
+            let interval = setInterval(() => {
+                if (sound && sound.isLoaded()) {
+                    clearInterval(interval)
+                    sound.play()
+                }
+            }, 10)
+
+        }
       
         p5.draw = () => {
           p5.background(250);
@@ -39,7 +53,7 @@ export default function Visualizer({position, type, direction}) {
         //   p5.rotateY(p5.frameCount * 0.01);
         //   p5.plane(100);
         //   p5.pop();
-          let level = amplitude.getLevel();
+          let level = analyzer.getLevel();
             let size = p5.map(level, 0, 1, 0, 200);
             p5.ellipse(50, 50, size, size);
         };
@@ -112,7 +126,10 @@ export default function Visualizer({position, type, direction}) {
     if (Platform.OS === "web") {
         return (
             <View style={styles.container}>
-                {/* <ReactP5Wrapper sketch={sketch} />; */}
+                {/* <Text> */}
+
+                <ReactP5Wrapper sketch={sketch} />;
+                {/* </Text> */}
                 {/* <canvas ref={visualizer} /> */}
             </View>
         )

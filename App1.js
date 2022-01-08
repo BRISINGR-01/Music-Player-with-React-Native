@@ -21,7 +21,7 @@ export default function App() {
 
   const [userMessage, setUserMessage] = useState(null);
 
-  require('./server/musicData.json').forEach(({title}) => Playlist.add(title))
+  Object.keys(require('./server/musicData.json')).forEach(({title}) => Playlist.add(title))
 
   return (
     <Player window={{width: windowW, height: windowH}} Playlist={Playlist} setUserMessage={setUserMessage}/>

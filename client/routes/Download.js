@@ -33,7 +33,7 @@ export default function Download() {
         setLoading(true);
         setOptions([]);
 
-        fetch(`${url}/search/${textValue}`).then(res => res.json()).then(res => {
+        fetch(`${url}/search/${encodeURI(textValue)}`).then(res => res.json()).then(res => {
             setOptions(res.map(el => {try {
                 return {...el, title: decodeURI(el.title)}   
             } catch (error) {

@@ -1,9 +1,8 @@
 class Playlist {
-    constructor(songs = []) {
+    init(songs = []) {
         this.content = songs;
         this.setCurrent(0);
     }
-    a
     add(song) {
         return this.content.push(song);
     }
@@ -54,8 +53,9 @@ class Playlist {
         return this.currentSong = song;
     }
     exists(song) {
+        const data = require('../server/musicData.json')
         return !!song && this.content.includes(song) && 
-            !!require('../server/musicData.json').find(el => el.title === song)
+            (song in data)
     }
 }
 

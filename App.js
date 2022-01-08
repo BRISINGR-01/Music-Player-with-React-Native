@@ -13,8 +13,8 @@ const { black } = palette;
 
 
 export default function App() {
-  const [open, setOpen] = useState(2);// '2' -> in order to show it hasn't been opened yet
-  const [currentPage, setCurrentPage] = useState('');// '' -> to detect the first rendering
+  const [open, setOpen] = useState('first open');// first open -> in order to show it hasn't been opened yet
+  const [currentPage, setCurrentPage] = useState('');// '' -> to detect the first rendering (must be falsy)
   const [userMessage, setUserMessage] = useState(null);
   const [navigationHistory, setNavigationHistory] = useState(['Home']);
 
@@ -31,8 +31,7 @@ export default function App() {
     }
     setNavigationHistory(arr);
   }
-  
-  console.log(currentPage);
+ 
 
   BackHandler.addEventListener('hardwareBackPress', () => {
     setOpen(2)// prevent weird animation when renedering
@@ -48,9 +47,12 @@ export default function App() {
   
 
   if (currentPage === '' && settings.promptUserToDownloadSongs) {
+
     setCurrentPage('Player');
-    require('./server/musicData.json').forEach(({title}) => Playlist.add(title))
     
+    const data = require('./server/musicData.json') 
+    Playlist.init(Object.keys(data));
+
     fetch(`${url}/promptToDownload`).then(res => res.json()).then(async res => {
       if (res.length) {// res contains the songs as an array of [{title:..., url:...},...]
         return new Promise((resolve, reject) => {
@@ -64,7 +66,7 @@ export default function App() {
             }
           });
 
-        }).then(() => {
+        }).then(ans => {
           if (ans === 'No') return;
 
           res = JSON.stringify(res);
@@ -87,7 +89,7 @@ export default function App() {
     <View style={style.app}>
         <SideMenu unit={unit} open={open} setOpen={setOpen} setPage={changePage}/>
         {userMessage && <UserMessage body={userMessage}/>}
-        <TouchableWithoutFeedback onPress={() => open !== 2 && setOpen(false)}>
+        <TouchableWithoutFeedback onPress={() => open !== 'first open' && setOpen(false)}>
             <View style={style.body}>
               <Body Playlist={Playlist} setUserMessage={setUserMessage}/>
             </View>

@@ -3,5 +3,6 @@
         "position": "down",
         "type": "middle"
     },
-    "promptUserToDownloadSongs": true
+    "promptUserToDownloadSongs": true,
+    "musicFolderPath": "F:/ALEX/VSC/Music Player/MusicPlayerMobile/assets/music"
 }

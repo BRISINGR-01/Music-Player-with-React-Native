@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, View, Dimensions, Image, Text } from 'react-native';
 import { Audio } from 'expo-av';
-import * as s from '../../assets/music'
 import musicData from '../../server/musicData.json'
 import { url } from '../../server/config.json'
 import { palette, messages } from '../SharedUtilities';
@@ -12,8 +11,7 @@ Audio.setAudioModeAsync({
 }).catch(console.log);
 
 
-
-function PlayBtn({ sound, unit, setIsPaused, isPaused }) {
+function PlayBtn({ sound, unit, setIsPaused, isPaused, warn }) {
     const styles = StyleSheet.create({
         container: {
             width: unit,
@@ -50,6 +48,8 @@ function PlayBtn({ sound, unit, setIsPaused, isPaused }) {
         setIsPaused(!isPaused);
         
         const status = await sound.getStatusAsync();
+        if (!status.isLoaded) return warn();
+
         if (status.isPlaying) {
             sound.pauseAsync();
         } else {
@@ -323,7 +323,7 @@ function Loop({ unit, sound, isLooping, setIsLooping }) {
 
 
 
-function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, totalSec }) {
+function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, totalSec, warn }) {
     const styles = StyleSheet.create({
         container: {
             width: '100%',
@@ -354,9 +354,13 @@ function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, t
     async function onPress(e) {
         progress = 100 * e.touchHistory.touchBank[0].currentPageX / windowW
         setProgress(progress);
+        
         if (!sound) return;
         
-        let { durationMillis } = await sound.getStatusAsync();
+        let { durationMillis, isLoaded } = await sound.getStatusAsync();
+
+        if (!isLoaded) return warn();
+
         await sound.setPositionAsync(
             durationMillis * progress / 100
         );
@@ -377,12 +381,13 @@ function Length({ setProgress, progress, sound, isPaused, windowW, currnetSec, t
     }
     
     return (
-        <View onStartShouldSetResponder={(e) => {
+        <View onStartShouldSetResponder={async e => {
+                if (!(await sound.getStatusAsync()).isLoaded) return warn();
                 sound?.pauseAsync();// *
                 onPress(e);
                 return true; // this is required so that it becomes a responder in order for the onResponderMove to work
             }} 
-            onResponderRelease={() => !isPaused && sound?.playAsync()}// * these two are so that the music stops during sliding
+            onResponderRelease={async () => !isPaused && (await sound.getStatusAsync()).isLoaded && sound?.playAsync()}// * these two are so that the music stops during sliding
             onResponderMove={onPress}>
 
             <View style={styles.container}>
@@ -432,7 +437,6 @@ export default function Bar({ Playlist, setUserMessage }) {
     const [totalSec, setTotalSec] = useState(0);
     const [currentSong, setCurrentSong] = useState(Playlist.content[0]);
 
-// console.log(currentSong);
     let unit = windowW / 5
     if (windowW > windowH) unit = windowH / 8;
     if (windowW < windowH) unit = windowW / 5;
@@ -440,41 +444,41 @@ export default function Bar({ Playlist, setUserMessage }) {
     if (unit > windowH / 8) unit = windowH / 8    
 
     
-    async function play(song) {
-        async function warn() {
-            sound.setOnPlaybackStatusUpdate(() => {});// when the .mp3 is broken, this loops non-stop even when a new song is loaded and played
-            return new Promise((resolve, reject) => {
+    async function warn() {
+        sound?.setOnPlaybackStatusUpdate(() => {});// when the .mp3 is broken, this loops non-stop even when a new song is loaded and played
+        return new Promise((resolve) => {
 
-                // ask to delete invalid file
-                setUserMessage({
-                    ...messages.invalidFile,
-                    callback: ans => {
-                        setUserMessage(null);
-                        setCurrentSong(Playlist.next());
-                        resolve(ans);
-                    }
-                });
-        
-            }).then(ans => {
-                if (ans === 'Yes') 
-                    fetch(`${url}/delete/${song}`, {
-                        method: 'DELETE',
-                    });
+            // ask to delete invalid file
+            setUserMessage({
+                ...messages.invalidFile,
+                callback: ans => {
+                    setUserMessage(null);
+                    setCurrentSong(Playlist.next());
+                    resolve(ans);
+                }
             });
-        }
-        
-        song = musicData.find(el => el.title === song).pathName
-        
+
+        }).then(ans => {
+            if (ans === 'Yes') 
+                fetch(`${url}/delete/${encodeURI(currentSong)}`, {
+                    method: 'DELETE',
+                });
+        });
+    }
+
+    
+    async function play(song) {
+        fetch(`${url}/getSong/${musicData[song].pathName}`)
         const { sound } = await new Audio.Sound.createAsync(
-            s[song],
+            {uri : `${url}/getSong/${musicData[song].pathName}`},
             { shouldPlay: !isPaused },
             status => {
-                if (status.error) return warn();
+                if (status.error) return warn(sound, setUserMessage, currentSong. setCurrentSong);
                 if (status.positionMillis) setCurrentSec(status.positionMillis);
                 if (status.durationMillis) setProgress(100 * status.positionMillis / status.durationMillis);
                 if (status.didJustFinish) setCurrentSong(Playlist.next());
             }// it triggers everytime the status is changed
-        );
+        ).catch(err => console.log(err));
         setSound(sound);    
     }
 
@@ -502,6 +506,7 @@ export default function Bar({ Playlist, setUserMessage }) {
                     setProgress={setProgress}
                     currnetSec={currnetSec}
                     totalSec={totalSec}
+                    warn={warn}
                 />
                 <View style={styles.buttonsContainer}>
                     <Loop 
@@ -519,6 +524,7 @@ export default function Bar({ Playlist, setUserMessage }) {
                         unit={unit} 
                         setIsPaused={setIsPaused} 
                         isPaused={isPaused}
+                        warn={warn}
                     />
                     <NextSong unit={unit} next={() => {
                         setIsLooping(false);

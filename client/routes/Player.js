@@ -2,8 +2,8 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import Visualizer from '../player/Visualizer';
-import Carousel from '../player/Carousel';
-import Bar from '../player/Bar';
+// import Carousel from '../player/Carousel';
+// import Bar from '../player/Bar';
 
 export default function Player({ window, Playlist, setUserMessage }) {
     return (
@@ -13,7 +13,7 @@ export default function Player({ window, Playlist, setUserMessage }) {
                     <Visualizer/>
                     {/* <Carousel Playlist={Playlist}/> */}
                 </View>
-                <Bar Playlist={Playlist} setUserMessage={setUserMessage}/>
+                {/* <Bar Playlist={Playlist} setUserMessage={setUserMessage}/> */}
             </View>
         </>
     )

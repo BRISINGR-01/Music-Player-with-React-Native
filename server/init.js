@@ -6,7 +6,14 @@ const ytSearch = require('yt-search');
 
 const download = require('./download');
 const musicData = require('./musicData.json');
-const musicFolderPath = path.resolve(__dirname, '../assets/music');
+const { musicFolderPath } = require('./settings.json');
+
+function deleteSong(song) {
+    if (fs.existsSync(path.resolve(__dirname, '../images', musicData[song].pathName + '.jpg'))) fs.unlinkSync(path.resolve(__dirname, '../images', musicData[song].pathName + '.jpg'));
+    if (fs.existsSync(path.resolve(__dirname, '../music', musicData[song].pathName + '.mp3'))) fs.unlinkSync(path.resolve(__dirname, '../music', musicData[song].pathName + '.mp3'));
+    delete musicData[song];
+    fs.writeFileSync(path.resolve(__dirname, './musicData.json'), JSON.stringify(musicData));
+}
 
 async function routes(req, res) {
     res.setHeader('Access-Control-Allow-Origin' , '*');
@@ -15,7 +22,7 @@ async function routes(req, res) {
 
     const action = req.url.split('/')[1];
     const query = decodeURI(req.url.replace(/\/\w*\//, ''));// everything after '/search/' or '/download/'
-    // console.log(action, query);
+    console.log(action, query);
 
     if (action === 'search') {
         let vids = await ytSearch(query);
@@ -24,22 +31,19 @@ async function routes(req, res) {
             url: el.url,
             thumbnail: el.thumbnail
         }});
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-
-        res.write(JSON.stringify(vids))
+        
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.write(JSON.stringify(vids));
         return res.end();
     }
 
     if (action === 'download') {
-        download(query, res);
+        await download(query);
         return res.end();
     }
 
     if (action === 'delete') {
-        fs.unlinkSync(path.resolve(__dirname, '../images', query + '.jpg'));
-        fs.unlinkSync(path.resolve(__dirname, '../music', musicData.find(el => el.title === query).pathName + '.mp3'));
-        musicData = musicData.filter(el => el.name !== query);
-        fs.writeFileSync(path.resolve(__dirname, './musicData.json'), JSON.stringify(musicData));
+        deleteSong(query);
         return res.end();
     }
 
@@ -47,15 +51,18 @@ async function routes(req, res) {
         const downloadedSongs = fs.readdirSync(musicFolderPath);
         let songsToDownload = [];
 
-        for (let i = 0; i < musicData.length; i++) {
-            if (!downloadedSongs.includes(musicData[i].pathName + '.mp3')) {
+        for (song in musicData) {
+            if (!downloadedSongs.includes(musicData[song].pathName + '.mp3')) {
                 songsToDownload.push({
-                    title: musicData[i].title,
-                    url: musicData[i].url,
+                    title: song,
+                    url: musicData[song].url,
                 });
             }
         }
+
+        res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify(songsToDownload));
+
         return res.end();
     }
 
@@ -66,18 +73,33 @@ async function routes(req, res) {
             buffers.push(chunk.toString());
         }
 
-        const songs = JSON.parse(buffers.join(''));
+        let songs = JSON.parse(buffers.join(''));
 
         for (let i = 0; i < songs.length; i++) {
-            download(songs[i].url, res);   
+            await download(songs[i].url);
         }
 
         return res.end();
     }
 
-    if (action === 'refreshSongs') {
-        let songs = fs.readdirSync(musicFolderPath).filter(el => el !== 'index.js');
-        fs.writeFileSync(path.resolve(musicFolderPath, 'index.js'), `module.exports = {${songs.map(el => `\'${el.replace('.mp3', '')}\':require(\'./${el}\')`)}}`);
+// improve
+    if (action === 'checkSongs') {
+        for (let i = 0; i < songs.length; i++) {
+            let songPath = path.resolve(musicFolderPath, songs[i]);
+            if (fs.lstatSync(songPath).size === 0) {
+                let song = Object.entries(musicData).find(([key, value]) => value.pathName === songs[i].replace('.mp3', ''))[0];
+                deleteSong(song)
+            }
+        }
+    }
+
+    if (action === 'getSong') {
+        let songPath = path.resolve(musicFolderPath, query + '.mp3');
+        
+        if (!fs.existsSync(songPath)) return res.end();
+
+        res.setHeader('Content-Type', 'audio/mpeg');
+        res.write(fs.readFileSync(songPath));
         return res.end();
     }
 
