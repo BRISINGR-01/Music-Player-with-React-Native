@@ -8,3 +8,5 @@ A music player made with react-native on which I am still working.
 - Visualizer
 - Carousel
 - Personal customizable algorithm
+
+# DIscontinued
